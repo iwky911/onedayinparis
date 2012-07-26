@@ -2,7 +2,7 @@ package main
 
 import(
 	//~ "fmt"
-	
+	"math/rand"
 )
 
 type Affectation []int
@@ -58,6 +58,34 @@ func (p *Problem) solve(startpoint *Affectation) *Affectation {
 		if mincost > p.Cost(newstop) {
 			mincost = p.Cost(newstop)
 			bestsolution = newstop
+		}
+	}
+	return bestsolution
+}
+
+func (p *Problem) SolveWithSimulatedAnnealing( startpoint *Affectation, nbiteration int, proba, rate float64) *Affectation {
+	bestsolution := startpoint
+	mincost := p.Cost(bestsolution)
+	
+	currentSolution := startpoint
+	for i:=0; i<nbiteration; i++ {
+		println("iter nb: ",i)
+		if rand.Float64() <proba {
+			currentSolution = p.getCheapest(currentSolution.getPossibleAffectation())
+		} else {
+			possibleSolutions := currentSolution.getPossibleAffectation()
+			println(len(*possibleSolutions))
+			currentSolution = &(*possibleSolutions)[rand.Intn(len(*possibleSolutions))]
+		}
+		
+		if p.Cost(currentSolution)< mincost {
+				bestsolution= currentSolution
+				mincost = p.Cost(currentSolution)
+			}
+		
+		proba= proba+rate
+		if proba>1 {
+			proba=1
 		}
 	}
 	return bestsolution

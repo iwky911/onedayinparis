@@ -37,9 +37,9 @@ func TestChooseSmallerCost(t *testing.T){
 	s := Affectation([]int{0,1,2})
 	p := Problem{&[][]int{{0, 1, 2}, {2,0,2}, {1,1,0} }}
 	
-	sol := p.solve(&s)
+	sol := p.SolveWithSimulatedAnnealing(&s, 200, 0.7, 0.01)
 	if !reflect.DeepEqual(sol, Affectation([]int{2, 0, 1})) {
-		fmt.Println(sol)
+		fmt.Println("solution:", sol)
 		t.Fail()	
 	}
 }
