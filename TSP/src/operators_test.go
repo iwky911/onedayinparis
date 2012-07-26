@@ -1,45 +1,62 @@
 package main
 
 import (
-	//"fmt"
-	"testing"
+	"fmt"
 	"reflect"
+	"testing"
 )
+//~ 
+//~ func TestSwap(t *testing.T) {
+	//~ a := Affectation([]int{0, 1, 2, 3})
+	//~ a = a.swap(0, 2)
+//~ 
+	//~ if !reflect.DeepEqual(a, Affectation([]int{2, 1, 0, 3})) {
+		//~ fmt.Println(a)
+		//~ fmt.Println(reflect.DeepEqual(a, []int{2, 1, 0, 3}))
+		//~ t.Fail()
+	//~ }
+//~ }
 
-func createStopsFromList(l []int) *Stop {
-	sortie := make([]Stop, len(l))
-	for i, v := range l {
-		sortie[i] = Stop{v, nil, nil}
-	}
-	for i := 0; i < len(l)-1; i++ {
-		sortie[i].next = &sortie[i+1]
-		sortie[i+1].previous = &sortie[i]
-	}
-	return &sortie[0]
-}
-
-func toInts(s *Stop) []int {
-	sortie := make([]int, 0)
-	for current := s; current != nil; current = current.next {
-		sortie = append(sortie, current.id)
-	}
-	println(len(sortie))
-	return sortie
-}
-
-func TestSwap(t *testing.T) {
-	s := createStopsFromList([]int{0, 1, 2, 3})
-	swap(s, s.next.next)
-	
-	if !reflect.DeepEqual(toInts(s.start()),[]int{2,1,0,3}) {
+func TestRevert(t *testing.T) {
+	a := Affectation([]int{0, 1, 2, 3})
+	a = a.invertRange(0, 3)
+	if !reflect.DeepEqual(a, Affectation([]int{3, 2, 1, 0})) {
 		t.Fail()
 	}
 }
 
-func TestRevert(t *testing.T) {
-		s := createStopsFromList([]int{0, 1, 2, 3})
-		invertRange(s, s.next.next.next)
-		if !reflect.DeepEqual(toInts(s.start()),[]int{3,2,1,0}) {
-			t.Fail()
-		}
+func TestCostComputationGiveCostSum(t *testing.T) {
+	a := Affectation([]int{0, 1, 2})
+	p := Problem{&[][]int{{0, 1, 2}, {2, 0, 2}, {1, 1, 0}}}
+	if p.Cost(&a) != 3 {
+		t.Fail()
+	}
+}
+
+func TestChooseSmallerCost(t *testing.T){
+	s := Affectation([]int{0,1,2})
+	p := Problem{&[][]int{{0, 1, 2}, {2,0,2}, {1,1,0} }}
+	
+	sol := p.solve(&s)
+	if !reflect.DeepEqual(sol, Affectation([]int{2, 0, 1})) {
+		fmt.Println(sol)
+		t.Fail()	
+	}
+}
+
+func TestOperatorDoNotChangeFirstAffectation(t *testing.T){
+	var s = Affectation([]int{0,1,2})
+	b := s.swap(1,2)
+	if s[1]==2 && b[1]==2{
+		t.Errorf("swap modified s")
+	}
+	}
+
+func TestCutWorks(t *testing.T){
+	a := Affectation([]int{1,2,3})
+	b := a.cutAt(1)
+	if !reflect.DeepEqual(b, Affectation([]int{2,3,1})) {
+		fmt.Println(a, b)
+		t.Errorf("not equals! ")
+	}
 	}

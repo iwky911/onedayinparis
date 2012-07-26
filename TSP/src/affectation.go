@@ -1,70 +1,64 @@
 package main
 
-type Stop struct {
-	id             int
-	next, previous *Stop
+import(
+	//~ "fmt"
+	
+)
+
+type Affectation []int
+
+type Problem struct {
+  costMatrix *[][]int
+  
 }
 
-func bindLeft(a, b *Stop){
-	if a!= nil{
-		a.next = b
-	}
-	}
-func bindRight(a,b *Stop){
-	if(b!=nil) {
-		b.previous = a
-	}
-	}
-
-func swap(a, b *Stop) {
-	bindRight( b, a.next)
-	bindLeft(a.previous, b)
-	bindRight(a, b.next)
-	bindLeft(b.previous, a)
-	a.next, b.next = b.next, a.next
-	a.previous, b.previous = b.previous, a.previous
+func (p *Problem) getCost(a, b int) int {
+	return (*p.costMatrix)[a][b]
 }
 
-func (s *Stop) start() *Stop{
-	for(s.previous != nil) {
-		s = s.previous
+func (p *Problem) Cost(a *Affectation) int {
+	cost := 0
+	for current := 0; current < len(*a)-1; current++ {
+		cost += p.getCost((*a)[current], (*a)[current+1])
 	}
-	return s
-	}
+	return cost
+}
 
-func invertRange(a, b *Stop) {
-	if a == b {
-		return
-	}
-
-	before := func(start, end *Stop) bool {
-		for start != nil {
-			if start == end {
-				return true
-			}
-			start = start.next
+func (a *Affectation) getPossibleAffectation() *[]Affectation {
+	possibility := make([]Affectation, 0)
+	for i:=0; i<len(*a); i++ {
+		if i>0 {
+			possibility = append(possibility, (*a).cutAt(i))
 		}
-		return false
-	}(a, b)
+		for j:= i+1; j<len(*a); j++ {
+			possibility = append(possibility, (*a).swap(i,j))
+			possibility = append(possibility, (*a).invertRange(i,j))
+		}
+	}
+	return &possibility
+}
 
-	if !before {
-		invertRange(b, a)
-		return
+func (p *Problem) getCheapest(possibilities *[]Affectation) *Affectation {
+	cost := 1000 * 1000 * 1000
+	var record *Affectation
+	for _, aff := range *possibilities {
+		if p.Cost(&aff) < cost {
+			record = &aff
+		}
 	}
-	left := a.previous
-	right := b.next
-	bindLeft(left, b)
-	bindRight(a, right)
-	var current, next *Stop
-	current = a
-	next = a.next
-	for next != nil && current != b {
-		nextnext := next.next
-		current.previous = next
-		next.next = current
-		current = next
-		next = nextnext
+	return record
+}
+
+func (p *Problem) solve(startpoint *Affectation) *Affectation {
+	bestsolution := startpoint
+	mincost := p.Cost(startpoint)
+
+	for i := 0; i < 4; i++ {
+		newstop := p.getCheapest(startpoint.getPossibleAffectation())
+		if mincost > p.Cost(newstop) {
+			mincost = p.Cost(newstop)
+			bestsolution = newstop
+		}
 	}
-	a.next = right
-	b.previous = left
+	return bestsolution
 }
