@@ -5,7 +5,7 @@
 # data gathered manually from http://www.ratp.fr/fr/upload/docs/application/pdf/2011-11/premiers_derniers_departs.pdf
 
 data = %{Line	Start	End	Duration	One Way?
-1	Chateau de Vincennes			
+1	Château de Vincennes			
 1	Bérault	Château de Vincennes	0:01	
 1	Saint-Mandé–Tourelle	Bérault	0:01	
 1	Porte de Vincennes	Saint-Mandé–Tourelle	0:01	
@@ -207,8 +207,8 @@ data = %{Line	Start	End	Duration	One Way?
 7bis	Jaurès	Bolivar	0:01	
 7bis	Louis Blanc	Jaurès	0:03	
 7bis	Botzaris			
-7bis	Place des Fêtes	Botzaris	0:02	1
-7bis	Pré-Saint-Gervais	Place des Fêtes	0:02	1
+7bis	Place des Fêtes	Botzaris	0:02	-1
+7bis	Pré-Saint-Gervais	Place des Fêtes	0:02	-1
 8	Balard			
 8	Lourmel	Balard	0:01	
 8	Boucicaut	Lourmel	0:01	

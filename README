@@ -5,3 +5,15 @@ We're answering that question with this project.
 I believe the graph data came from here originally:
 
 http://www.esiee.fr/~coupriem/Graphestp3/graphestp3.html
+
+
+build.sh:
+Build the suite of tools
+(you must have Go setup and installed first, as well as Ruby)
+
+run.sh:
+Run this script to execute the suite of tools together.
+
+
+clean_all.sh : 
+will remote all compiled files and temporary data files

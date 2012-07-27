@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 type Problem struct {
@@ -44,7 +44,7 @@ func (p *Problem) Cost(aff *Affectation) int {
 	return cost
 }
 
-
-func (a *Affectation) Dump() {
+func (a *Affectation) Dump(filename string) {
+	ioutil.WriteFile(filename, []byte(fmt.Sprintf("%v", a.data)), 0666)
 	fmt.Println(a.data)
 }
