@@ -8,7 +8,8 @@ import (
 )
 
 type Problem struct {
-	costMatrix *[][]int
+	costMatrix [][]int
+	//edges []map[int][]int
 }
 
 func NewProblem(filename string, size int) Problem {
@@ -27,18 +28,18 @@ func NewProblem(filename string, size int) Problem {
 			output[i] = append(output[i], int(mynb))
 		}
 	}
-	return Problem{&output}
+	return Problem{output}
 }
 
 func (p *Problem) getCost(a, b int) int {
-	return (*p.costMatrix)[a][b]
+	return p.costMatrix[a][b]
 }
 
 func (p *Problem) Cost(aff *Affectation) int {
 	affdata := (*aff).data
 	cost := 0
 	for current := 0; current < len(affdata)-1; current++ {
-		cost += p.getCost(affdata[current], affdata[current+1])
+		cost += p.costMatrix[affdata[current]][affdata[current+1]]
 	}
 	return cost
 }
