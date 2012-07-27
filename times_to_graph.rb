@@ -1,9 +1,11 @@
+# -*- encoding:utf-8 -*-
+
 # parses raw times and converts them to a graph; may require several reviews of the nodes
 # to make sure that slight punctuation variations don't get set as different nodes
 # data gathered manually from http://www.ratp.fr/fr/upload/docs/application/pdf/2011-11/premiers_derniers_departs.pdf
 
 data = %{Line	Start	End	Duration	One Way?
-1	Château de Vincennes			
+1	Chateau de Vincennes			
 1	Bérault	Château de Vincennes	0:01	
 1	Saint-Mandé–Tourelle	Bérault	0:01	
 1	Porte de Vincennes	Saint-Mandé–Tourelle	0:01	

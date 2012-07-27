@@ -1,6 +1,7 @@
 package main
 
-import("container/heap"
+import(
+	"container/heap"
 	"fmt"
 	"os"
 	. "strconv"
@@ -76,7 +77,7 @@ func loadGraph(filename string) Graph {
 		if line=="" {
 			continue
 		}
-		var args = strings.Split(line, "\t")
+		var args = strings.Split(line, ",")
 		//fmt.Println(args)
 		//~ fmt.Println(args[0])
 		//~ fmt.Println(args[1])
@@ -92,7 +93,7 @@ func loadGraph(filename string) Graph {
 }
 
 func main(){
-	g := loadGraph("edges")
+	g := loadGraph("edges.csv")
 	fmt.Println(g.edges)
 	saveToFile("matrix.txt", g.Matrix())
 	}
