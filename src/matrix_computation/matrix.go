@@ -52,7 +52,7 @@ func (g *Graph) Distances(start int) []int {
 }
 
 func SaveMatrixToFile(filename string, matrix [][]int) {
-	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 666)
+	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	defer f.Close()
 	if err != nil {
 		println("erreur lors de l'ouverture du fichier")
@@ -151,7 +151,7 @@ func (g *Graph) FullPath(nodeIds []int) []int {
 }
 
 func SavePathToFile(filename string, nodes []int) {
-	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 666)
+	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	defer f.Close()
 	if err != nil {
 		println("erreur lors de l'ouverture du fichier")
