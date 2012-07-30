@@ -10,6 +10,7 @@ type Item struct {
 	priority int // The priority of the item in the queue.
 	// The index is needed by changePriority and is maintained by the heap.Interface methods.
 	index  int // The index of the item in the heap.
+	line   string
 	parent *Item
 }
 
@@ -29,6 +30,7 @@ func (pq PriorityQueue) Swap(i, j int) {
 }
 
 func (pq *PriorityQueue) Push(x interface{}) {
+	pq.checkGrow(1)
 	a := *pq
 	n := len(a)
 	a = a[0 : n+1]
@@ -36,6 +38,17 @@ func (pq *PriorityQueue) Push(x interface{}) {
 	item.index = n
 	a[n] = item
 	*pq = a
+}
+
+func (pq *PriorityQueue) checkGrow(g int) {
+	l := len(*pq)
+	if l+g > cap(*pq) { // reallocate
+		// Allocate double what's needed, for future growth.
+		newSlice := make([]*Item, l, (l+g)*2)
+		// The copy function is predeclared and works for any slice type.
+		copy(newSlice, *pq)
+		*pq = newSlice
+	}
 }
 
 func (pq *PriorityQueue) Pop() interface{} {

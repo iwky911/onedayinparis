@@ -12,7 +12,8 @@ import (
 )
 
 type Graph struct {
-	Edges [][]Edge
+	Edges      [][]Edge
+	switchCost int
 }
 
 type Edge struct {
@@ -32,8 +33,8 @@ func (g *Graph) Matrix() [][]int {
 
 func (g *Graph) Distances(start int) []int {
 	visited := map[int]bool{}
-	pq := make(PriorityQueue, 0, len(g.Edges)*100)
-	pq.AddNode(&Item{value: start, priority: 0, index: 0})
+	pq := make(PriorityQueue, 0) //, len(g.Edges)*100
+	pq.AddNode(&Item{value: start, priority: 0, index: 0, line: ""})
 
 	distances := make([]int, len(g.Edges))
 
@@ -45,7 +46,11 @@ func (g *Graph) Distances(start int) []int {
 		visited[n.value] = true
 		distances[n.value] = n.priority
 		for _, edge := range g.Edges[n.value] {
-			pq.AddNode(&Item{value: edge.end, priority: edge.cost + n.priority, index: 0})
+			switchCost := 0
+			if n.line != "" && n.parent != nil && n.parent.line != n.line {
+				switchCost = g.switchCost
+			}
+			pq.AddNode(&Item{value: edge.end, priority: switchCost + edge.cost + n.priority, index: 0, line: edge.line, parent: n})
 		}
 	}
 	return distances
@@ -66,9 +71,10 @@ func SaveMatrixToFile(filename string, matrix [][]int) {
 	}
 }
 
-func LoadGraph(filename string) Graph {
+/* TODO: change line to an array of lines */
+func LoadGraph(filename string, switchCost int) Graph {
 	file, _ := ioutil.ReadFile(filename)
-	g := Graph{make([][]Edge, 500)}
+	g := Graph{make([][]Edge, 500), switchCost}
 	for i, _ := range g.Edges {
 		// println("la")
 		g.Edges[i] = make([]Edge, 0)
@@ -118,8 +124,8 @@ func (g *Graph) backtrack(v *Item) []int {
 
 func (g *Graph) ShortestPath(start int, end int) []int {
 	visited := map[int]bool{}
-	pq := make(PriorityQueue, 0, len(g.Edges)*100)
-	pq.AddNode(&Item{start, 0, 0, nil})
+	pq := make(PriorityQueue, 0) //, len(g.Edges)*100
+	pq.AddNode(&Item{start, 0, 0, "", nil})
 	distances := make([]int, len(g.Edges))
 
 	for len(pq) > 0 {
@@ -128,17 +134,42 @@ func (g *Graph) ShortestPath(start int, end int) []int {
 			continue
 		}
 		if n.value == end {
-			// fmt.Println("done!")
 			return g.backtrack(n)
 		}
 		visited[n.value] = true
 		distances[n.value] = n.priority
 		for _, edge := range g.Edges[n.value] {
-			pq.AddNode(&Item{edge.end, edge.cost + n.priority, 0, n})
+			switchCost := 0
+			if n.line != "" && n.parent != nil && n.parent.line != n.line {
+				switchCost = g.switchCost
+			}
+			pq.AddNode(&Item{edge.end, switchCost + edge.cost + n.priority, 0, edge.line, n})
 		}
 	}
 	log.Fatal("No path between", start, "and", end, "found")
 	return []int{}
+}
+
+/* function to include the switching cost of lines between nodes */
+func (g *Graph) Cost(a, b int, lines []string) (float64, []string) {
+	return 0, lines
+}
+
+/* function to reduce the number of lines to the least possible matches between two points; defaults to newlines */
+func match(newlines []string, oldlines []string) []string {
+	updatedlines := make([]string, 0)
+	for i := 0; i < len(oldlines); i++ {
+		for j := 0; j < len(newlines); j++ {
+			if oldlines[i] == newlines[j] {
+				updatedlines = append(updatedlines, newlines[j])
+			}
+		}
+	}
+	// if there are no matches, return the new lines
+	if len(updatedlines) == 0 {
+		updatedlines = newlines
+	}
+	return updatedlines
 }
 
 func (g *Graph) FullPath(nodeIds []int) []int {
