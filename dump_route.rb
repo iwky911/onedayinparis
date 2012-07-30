@@ -25,14 +25,14 @@ class Edge
   def initialize(depart_id, arrival_id, duration, line)
     @e_id = @@edge_max; @@edge_max += 1
     @depart_id= depart_id; @arrival_id = arrival_id
-    @duration = duration; @lines = [line]
+    @duration = duration; @lines = [*line.split(' ')]
   end
   def self.add(e)
     ex = @@edges[gen_key(e.depart_id, e.arrival_id)]
     if ex.nil?
       @@edges[gen_key(e.depart_id, e.arrival_id)] = e
     else
-      ex.lines << e.lines[0]
+      e.lines[0].split(' ').each { |line| ex.lines << line }
     end
   end
   def self.gen_key(depart_id, arrival_id)
@@ -74,7 +74,6 @@ route.each_with_index do |n_id, i|
   elsif i == route.length-1
     puts "Finish at #{n.name}"
   end
-  
   
   unless e.nil?
     duration += e.duration.to_i 

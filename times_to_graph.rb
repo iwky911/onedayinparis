@@ -426,22 +426,33 @@ class Node
 end
 
 class Edge
-  attr_reader :e_id, :depart_id, :arrival_id, :duration, :line
+  attr_accessor :e_id, :depart_id, :arrival_id, :duration, :lines
   @@edge_max = 0
-  @@edges = []
+  @@edges = {}
   def initialize(depart_id, arrival_id, duration, line)
     @e_id = @@edge_max; @@edge_max += 1
     @depart_id= depart_id; @arrival_id = arrival_id
-    @duration = duration; @line = line
+    @duration = duration; @lines = [line]
   end
   def self.add(e)
-    @@edges << e
+    ex = @@edges[gen_key(e.depart_id, e.arrival_id)]
+    if ex.nil?
+      @@edges[gen_key(e.depart_id, e.arrival_id)] = e
+    else
+      ex.lines << e.lines[0]
+    end
+  end
+  def self.gen_key(depart_id, arrival_id)
+    "#{depart_id};#{arrival_id}"
+  end
+  def self.find(depart_id, arrival_id)
+    @@edges[gen_key(depart_id, arrival_id)]
   end
   def self.all
-    @@edges
+    @@edges.values
   end
   def to_s
-    "#{@depart_id},#{@arrival_id},#{@duration},#{@line}"
+    "#{@depart_id},#{@arrival_id},#{@duration},#{@lines.join(' ')}"
   end
 end
 
@@ -459,4 +470,4 @@ n_out = File.open("nodes.csv", "w")
 e_out = File.open("edges.csv", "w")
 data.split("\n").each_with_index { |l, i| add(*l.split("\t")) if i > 0 }
 Node.all.sort_by(&:n_id).each {|n| n_out.print "#{n}\n"} #.sort_by(&:name)
-Edge.all.each {|e| e_out.print "#{e}\n"}
+Edge.all.sort_by(&:e_id).each {|e| e_out.print "#{e}\n"}
