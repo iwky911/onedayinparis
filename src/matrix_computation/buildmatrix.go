@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"time"
 )
 
 func buildMatrix(g Graph) {
@@ -24,7 +26,7 @@ func main() {
 	println("Switch cost set to", *switchCost)
 
 	g := LoadGraph("edges.csv", *switchCost)
-
+	
 	if !*runParseNodes {
 		buildMatrix(g)
 	} else {

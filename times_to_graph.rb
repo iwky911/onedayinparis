@@ -391,7 +391,7 @@ data = %{Line	Start	End	Duration	One Way?
 14	Bercy	Gare de Lyon	0:02	
 14	Cour Saint-Émilion	Bercy	0:01	
 14	Bibliothèque François Mitterrand	Cour Saint-Émilion	0:02	
-14	Olympiades	Bibliothèque François Mitterrand	0:02	}
+14	Olympiades	Bibliothèque François Mitterrand	0:02}
 
 class Node
   attr_reader :n_id, :name
@@ -422,6 +422,9 @@ class Node
   end
   def self.all
     @@nodeTable.values
+  end
+  def self.current_max_node
+    @@node_max
   end
 end
 
@@ -470,4 +473,5 @@ n_out = File.open("nodes.csv", "w")
 e_out = File.open("edges.csv", "w")
 data.split("\n").each_with_index { |l, i| add(*l.split("\t")) if i > 0 }
 Node.all.sort_by(&:n_id).each {|n| n_out.print "#{n}\n"} #.sort_by(&:name)
+e_out.print "#{Node.current_max_node}\n"
 Edge.all.sort_by(&:e_id).each {|e| e_out.print "#{e}\n"}

@@ -10,7 +10,7 @@ type Item struct {
 	priority int // The priority of the item in the queue.
 	// The index is needed by changePriority and is maintained by the heap.Interface methods.
 	index  int // The index of the item in the heap.
-	line   string
+	// lines   []string
 	parent *Item
 }
 
