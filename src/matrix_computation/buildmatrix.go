@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
-	"time"
 )
 
 func buildMatrix(g Graph) {
