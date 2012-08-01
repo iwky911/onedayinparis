@@ -54,6 +54,7 @@ nodes = File.open("./nodes.csv", "r").read.split("\n").map { |line| Node.new(*li
 File.open("./edges.csv","r").read.split("\n").each_with_index { |line,i| Edge.add(Edge.new(*line.split(","))) if i>0 }
 
 n_last, n_last_2, line_last = nil; duration = 0; dur_tot = 0
+switch_count = 0
 route.each_with_index do |n_id, i|
   n = nodes[n_id]
   e = Edge.find(n_last.n_id, n.n_id) unless n_last.nil?
@@ -63,12 +64,14 @@ route.each_with_index do |n_id, i|
     puts "---> Jump made. #{n_last.name}(#{n_last.n_id}) -> #{n.name} (#{n.n_id})"
   elsif !n_last_2.nil? && n_last_2.n_id == n.n_id
     puts "After #{duration}min, turn around at #{n_last.name} and head back towards #{n.name}"
+    switch_count += 1
     duration = 0
   elsif (!e.nil? && line_last.nil?)
     puts "Start on line #{e.lines.join('/')} at #{n_last.name}, towards #{n.name}"
     line_last = e.lines[0]
   elsif !e.lines.include?(line_last)
     puts "After #{duration}min, switch from line #{line_last} to line #{e.lines.join('/')} at #{n_last.name}, towards #{n.name}"
+    switch_count += 1
     duration = 0
     line_last = e.lines[0]
   elsif i == route.length-1
@@ -81,4 +84,4 @@ route.each_with_index do |n_id, i|
    end
    n_last_2 = n_last; n_last = n
 end
-puts "Total time: #{dur_tot}min"
+puts "Total time: #{dur_tot}min, number of switches: #{switch_count}"
